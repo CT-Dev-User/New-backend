@@ -11,15 +11,9 @@
         "src": "/(.*)",
         "dest": "index.js"
       }
-    ],
-    "build": {
-      "env": {
-        "NPM_FLAGS": "--legacy-peer-deps"
-      },
-      "commands": {
-        "install": "npm install --legacy-peer-deps",
-        "build": "npm run build"
-      }
+    ]
+   
+      
     }
   }
   
