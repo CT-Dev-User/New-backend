@@ -1,40 +1,21 @@
-import multer from "multer";
-import path from "path";
-import fs from "fs";
+import multer from 'multer';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import cloudinary from './cloudinary.js'; // Cloudinary config import
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const dir = 'uploads/';
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
-    }
-    cb(null, dir);
+// Set up Cloudinary storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary.v2,
+  params: {
+    folder: 'uploads', // Folder name in Cloudinary
+    allowed_formats: ['jpeg', 'jpg', 'png'], // Set allowed file formats
+    public_id: (req, file) => Date.now() + '-' + file.originalname, // Unique file name
   },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
 });
 
-const fileFilter = (req, file, cb) => {
-  const filetypes = /mp4|mov|avi|mkv|wmv|flv|jpeg|jpg|png|gif|pdf|docx/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = file.mimetype.startsWith('video/') ||
-                   file.mimetype.startsWith('image/') ||
-                   file.mimetype === 'application/pdf' ||
-                   file.mimetype === 'application/msword' ||
-                   file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-
-  if (extname && mimetype) {
-    cb(null, true);
-  } else {
-    cb(new Error('Unsupported file type!'));
-  }
-};
-
-const upload = multer({ 
+// Set up Multer with Cloudinary storage
+const upload = multer({
   storage: storage,
-  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB limit
-  fileFilter: fileFilter
+  limits: { fileSize: 100 * 1024 * 1024 }, // Limit file size to 100MB
 });
 
 export default upload;
