@@ -1,0 +1,25 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "index.js",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "index.js"
+      }
+    ],
+    "build": {
+      "env": {
+        "NPM_FLAGS": "--legacy-peer-deps"
+      },
+      "commands": {
+        "install": "npm install --legacy-peer-deps",
+        "build": "npm run build"
+      }
+    }
+  }
+  
